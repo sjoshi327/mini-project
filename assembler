@@ -167,4 +167,69 @@ printf("\n\nPASS 2 in progress..... ");
     fprintf(fp4,"^");
     for(i=2;i<(alen+2);i++)
     {
+       itoa(operand[i],ad,16);
+     fprintf(fp1,"%s",ad);
+     fprintf(fp4,"%s",ad);
+    }
+    fprintf(fp1,"\n");
+   }
+   else if(strcmp(opcode,"WORD")==0)
+   {
+    len=strlen(operand);
+    itoa(atoi(operand),a,10);
+    fprintf(fp1,"%X\t%s\t%s\t%s\t00000%s\n",address,label,opcode,operand,a);
+    fprintf(fp4,"^00000%s",a);
+   }
+   else if((strcmp(opcode,"RESB")==0)||(strcmp(opcode,"RESW")==0))
+    fprintf(fp1,"%X\t%s\t%s\t%s\n",address,label,opcode,operand);
+   else
+   {
+    while(strcmp(opcode,mnemonic[j])!=0)
+     j++;
+    if(strcmp(operand,"COPY")==0)
+     fprintf(fp1,"%X\t%s\t%s\t%s\t%s0000\n",address,label,opcode,operand,code[j]);
+    else
+    {
+     rewind(fp2);
+     fscanf(fp2,"%s%X",symbol,&add);
+      while(strcmp(operand,symbol)!=0)
+       fscanf(fp2,"%s%X",symbol,&add);
+     fprintf(fp1,"%X\t%s\t%s\t%s\t%s%X\n",address,label,opcode,operand,code[j],add);
+     fprintf(fp4,"^%s%X",code[j],add);
+    }
+   }
+   fscanf(fp3,"%X%s%s%s",&address,label,opcode,operand);
+  }
+  fprintf(fp1,"%X\t%s\t%s\t%s\n",address,label,opcode,operand);
+  fprintf(fp4,"\nE^00%X",st);
+  printf("\n\n\tINTERMEDIATE FILE  COVERTED TO OBJECT CODE");
+printf("\n\nPASS 2 ends....");
+printf("\n\t\t\t$$$$$$$$$$ OUTPUT FILE CREATED $$$$$$$$$$$\n\n");
+  fclose(fp1);
+  fclose(fp2);
+  fclose(fp3);
+  fclose(fp4);
+  printf("\n\n\t\t\tOUTPUT FILE :\n\n");
+  fp1=fopen("OUTPUT.txt","r");
+  ch=fgetc(fp1);
+  while(ch!=EOF)
+  {
+   printf("%c",ch);
+   ch=fgetc(fp1);
+  }
+  printf("\n\nCONTENTS OF OBJECT CODE FILE :\n\n");
+  fp4=fopen("OBJCODE.txt","r");
+  ch=fgetc(fp4);
+  while(ch!=EOF)
+  {
+   printf("%c",ch);
+   ch=fgetc(fp4);
+  }
+  fclose(fp1);
+  fclose(fp3);
+  fclose(fp4);
+
+  return 0;
+}
+
       
