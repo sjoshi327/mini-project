@@ -98,3 +98,73 @@ while(strcmp(opcode,"END")!=0)
    else
    {
       fprintf(fp1,"%X\t%s\t%s\t%s\n",address,label,opcode,operand);
+            address+=3;
+       locctr+=3;
+   }
+   fscanf(fp3,"%s%s%s",label,opcode,operand);
+  }
+  fprintf(fp1,"%X\t%s\t%s\t%s\n",address,label,opcode,operand);
+  l=address;
+  fclose(fp1);
+  fclose(fp2);
+  fclose(fp3);
+    printf("\n\nTHE INTERMEDIATE FILE (addressing done)-->  : \n\n\t");
+  fp1=fopen("MUTUAL_FILE.txt","r");
+  ch=fgetc(fp1);
+  while(ch!=EOF)
+  {
+   printf("%c",ch);
+   ch=fgetc(fp1);
+  }
+  fclose(fp1);
+  printf("\n\nPROGRAM LENGTH--> : %X",l-c);
+  printf("\n\n\t\t\tSYMBOL TABLE :\n\n");
+  fp2=fopen("my_symtab.txt","r");
+  ch=fgetc(fp2);
+  while(ch!=EOF)
+  {
+   printf("%c",ch);
+   ch=fgetc(fp2);
+  }
+fclose(fp2);
+printf("\n\nPASS 1 ends.....");
+printf("\n\nPASS 2 in progress..... ");
+ fp1 = fopen("OUTPUT.txt","w");
+  fp2 = fopen("my_symtab.txt","r");
+  fp3 = fopen("MUTUAL_FILE.txt","r");
+  fp4 = fopen("OBJCODE.txt","w");
+
+  fscanf(fp3,"%s%s%s",label,opcode,operand);
+
+  while(strcmp(opcode,"END")!=0)
+  {
+   prevaddr=address;
+   fscanf(fp3,"%X%s%s%s",&address,label,opcode,operand);
+  }
+
+  finaddr=address;
+  fclose(fp3);
+
+ fp3=fopen("MUTUAL_FILE.txt","r");
+
+  fscanf(fp3,"%s%s%s",label,opcode,operand);
+  if(strcmp(opcode,"START")==0)
+  {
+   fprintf(fp1,"\t%s\t%s\t%s\n",label,opcode,operand);
+   fprintf(fp4,"H^%s^00%s^00%X\n",label,operand,finaddr);
+   fscanf(fp3,"%X%s%s%s",&address,label,opcode,operand);
+   st=address;
+   diff=prevaddr-st;
+    fprintf(fp4,"T^00%X^%X",address,diff);
+  }
+  while(strcmp(opcode,"END")!=0)
+  {
+   if(strcmp(opcode,"BYTE")==0)
+   {
+    fprintf(fp1,"%X\t%s\t%s\t%s\t",address,label,opcode,operand);
+    len=strlen(operand);
+    alen=len-3;
+    fprintf(fp4,"^");
+    for(i=2;i<(alen+2);i++)
+    {
+      
