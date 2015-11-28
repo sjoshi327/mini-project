@@ -1,0 +1,100 @@
+/*
+PROJECT BY :
+SUNIL JOSHI
+SHUBHAM GUPTA
+CSE [ C ]
+5TH SEMESTER
+GRAPHIC ERA UNIVERSITY
+*/
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+///////////////////////////////MY EXPLICITLY DEFINED FUNCTION FOR itoa() AS IT DOES NOT WORK WITH C99///////////////////////////////////
+
+	char* itoa(int value, char* result, int base)
+	  {
+		if (base < 2 || base > 36) { *result = '\0'; return result; }
+
+		char* ptr = result, *ptr1 = result, tmp_char;
+		int tmp_value;
+
+		do {
+			tmp_value = value;
+			value /= base;
+			*ptr++ = "zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz" [35 + (tmp_value - value * base)];
+		} while ( value );
+
+		if (tmp_value < 0) *ptr++ = '-';
+		*ptr-- = '\0';
+		while(ptr1 < ptr) {
+			tmp_char = *ptr;
+			*ptr--= *ptr1;
+			*ptr1++ = tmp_char;
+		}
+		return result;
+	}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+int main()
+{
+  char a[10],ad[10],label[10],opcode[10],operand[10],symbol[10],ch,fnm[15],ab[15];
+  int st,diff,diff1,i,address,address1,add,len,alen,finaddr,prevaddr,j=0;
+  char mnemonic[15][15]={"LDA","STA","LDCH","STCH","ADD","SUB","MUL","DIV","J","JSUB"};
+  int locctr=0x0,start,l,c=0x0,k=0,bol=0;
+  char code[15][15]={"00","0C","50","54","28","29","3A","3B","3E","3F"};
+  FILE *fp1,*fp2,*fp3,*fp4;
+printf("ENTER THE FILE NAME  : \n");
+scanf("%s",&fnm);
+  fp1 = fopen("MUTUAL_FILE.txt","w");
+  fp3 = fopen(fnm,"r");
+ printf("\n\n\t\t\tINPUT FILE:\n\n");
+  ch=fgetc(fp3);
+  while(ch!=EOF)
+  {
+   printf("%c",ch);
+   ch=fgetc(fp3);
+  }
+ rewind(fp3);
+printf("\n\nPASS 1 in process...");
+
+fp2=fopen("my_symtab.txt","w");
+  fscanf(fp3,"%s%s%s%X",label,opcode,operand,&address);
+    if(strcmp(operand,"START")==0)
+    {
+            start=address;
+            locctr=start;
+            prevaddr=locctr;
+            c=address;
+        fprintf(fp1,"%s\t%s\t%X\n",opcode,operand,address);
+    }
+    else
+        locctr=0x0;
+fscanf(fp3,"%s%s%s",label,opcode,operand);
+while(strcmp(opcode,"END")!=0)
+  {
+      if(strcmp(label,"**")!=0)
+        fprintf(fp2,"%s\t%X\n",label,locctr);
+
+        if(strcmp(opcode,"BYTE")==0)
+            {
+                fprintf(fp1,"%X\t%s\t%s\t%s\t\n",address,label,opcode,operand);
+                len=strlen(operand);
+                address+=len-3;
+                locctr+=len-3;
+            }
+            else if(strcmp(opcode,"RESB")==0)
+           {
+                fprintf(fp1,"%X\t%s\t%s\t%s\n",address,label,opcode,operand);
+                address+=(atoi(operand));
+                locctr+=(atoi(operand));
+           }
+    else if (strcmp(opcode,"RESW")==0)
+    {
+        fprintf(fp1,"%X\t%s\t%s\t%s\n",address,label,opcode,operand);
+        address+=(3*(atoi(operand)));
+         locctr+=(3*(atoi(operand)));
+    }
+   else
+   {
+      fprintf(fp1,"%X\t%s\t%s\t%s\n",address,label,opcode,operand);
